@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { obtenerEmpresas } from "../servicios/empresaServicio";
 import "bootstrap/dist/css/bootstrap.min.css";
+import { Button } from "@mui/material";
 
 
 export default function ListaEmpresas() {
@@ -20,6 +21,7 @@ export default function ListaEmpresas() {
             <th>NIT</th>
             <th>Dirección</th>
             <th>Teléfono</th>
+            <th>Acciones</th>
           </tr>
         </thead>
         <tbody>
@@ -29,6 +31,10 @@ export default function ListaEmpresas() {
               <td>{empresa.nit}</td>
               <td>{empresa.direccion}</td>
               <td>{empresa.telefono}</td>
+              <td className="text-center">
+                <button className="btn btn-primary me-2">Editar</button>
+                <Button variant="outlined" color="error">Eliminar</Button>
+              </td>
             </tr>
           ))}
         </tbody>
