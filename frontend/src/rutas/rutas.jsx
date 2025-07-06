@@ -13,6 +13,7 @@ export default function Rutas() {
         <Route path="/" element={<FormularioEmpresa />} />
         <Route path="/lista" element={<ListaEmpresas />} />
         <Route path="/menu" element={<PositionedMenu />} />
+        <Route path="/editar/:id" element={<FormularioEmpresa />} />
       </Routes>
     </BrowserRouter>
   );

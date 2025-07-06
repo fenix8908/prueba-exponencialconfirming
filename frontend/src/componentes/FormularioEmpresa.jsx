@@ -1,6 +1,10 @@
-import { useState } from "react";
-import { registrarEmpresa } from "../servicios/empresaServicio";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import {
+  actualizarEmpresa,
+  obtenerEmpresaPorId,
+  registrarEmpresa,
+} from "../servicios/empresaServicio";
+import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function FormularioEmpresa() {
@@ -10,6 +14,19 @@ export default function FormularioEmpresa() {
     direccion: "",
     telefono: "",
   });
+  const { id } = useParams(); // Obtener el ID de los parámetros de la URL
+  const esEdicion = Boolean(id); // Verificar si es edición o creación
+  useEffect(() => {
+    // Cargar los datos de la empresa si se está editando
+    if (esEdicion) {
+      obtenerEmpresaPorId(id).then((res) => {
+        setFormulario(res.data);
+      });
+    } else {
+      setFormulario({ nombre: "", nit: "", direccion: "", telefono: "" });
+    }
+  }, [id, esEdicion]);
+
   const [mensaje, setMensaje] = useState("");
   const navegacion = useNavigate();
 
@@ -21,19 +38,31 @@ export default function FormularioEmpresa() {
   const manejarEnvio = async (e) => {
     e.preventDefault();
     try {
-      await registrarEmpresa(formulario);
-      setMensaje("Empresa registrada con éxito.");
-      setFormulario({ nombre: "", nit: "", direccion: "", telefono: "" });
-      Swal.fire({
-        title: "Éxito",
-        text: "Empresa registrada correctamente.",
-        icon: "success",
-        confirmButtonText: "Aceptar",
-      }).then(() => {
-        navegacion("/lista");
-      });
-    } catch (error) {
+      if (esEdicion) {
+        await actualizarEmpresa(id, formulario);
         Swal.fire({
+          title: "Actualización exitosa",
+          text: "Empresa actualizada correctamente.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        }).then(() => {
+          navegacion("/lista");
+        });
+      } else {
+        await registrarEmpresa(formulario);
+        setMensaje("Empresa registrada con éxito.");
+        setFormulario({ nombre: "", nit: "", direccion: "", telefono: "" });
+        Swal.fire({
+          title: "Éxito",
+          text: "Empresa registrada correctamente.",
+          icon: "success",
+          confirmButtonText: "Aceptar",
+        }).then(() => {
+          navegacion("/lista");
+        });
+      }
+    } catch (error) {
+      Swal.fire({
         title: "Error",
         text: error.response?.data?.error || "Error al registrar la empresa.",
         icon: "error",
@@ -44,9 +73,12 @@ export default function FormularioEmpresa() {
 
   return (
     <div>
-      <h2>Registrar Empresa</h2>
+      <h2>{esEdicion ? "Actualizar Empresa" : "Registrar Empresa"}</h2>
       {mensaje && <p>{mensaje}</p>}
-      <form onSubmit={manejarEnvio} className="container mt-4 border p-4 shadow">
+      <form
+        onSubmit={manejarEnvio}
+        className="container mt-4 border p-4 shadow"
+      >
         <div className="row mb-3">
           <div className="col-md-6">
             <label htmlFor="nombre" className="form-label">
@@ -112,7 +144,7 @@ export default function FormularioEmpresa() {
         <div className="row">
           <div className="col-12 text-center">
             <button type="submit" className="btn btn-primary">
-              Registrar
+              {esEdicion ? "Actualizar" : "Registrar"}
             </button>
           </div>
         </div>

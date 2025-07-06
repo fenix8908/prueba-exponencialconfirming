@@ -57,7 +57,7 @@ export default function ListaEmpresas() {
                 <td>{empresa.direccion}</td>
                 <td>{empresa.telefono}</td>
                 <td className="text-center">
-                  <button className="btn btn-primary me-2">Editar</button>
+                  <button className="btn btn-primary me-2" onClick={()=>navegacion(`/editar/${empresa.id}`)} >Editar</button>
                   <Button variant="outlined" color="error" onClick={()=>eliminarEmpresaPorId(empresa.id)}>
                     Eliminar
                   </Button>
