@@ -15,6 +15,19 @@ export default function ListaEmpresas() {
   // Función para eliminar una empresa
   const eliminarEmpresaPorId = async (id) => {
     try {
+      // Confirmación antes de eliminar
+      const confirmacion = await Swal.fire({
+        title: "¿Estás seguro?",
+        text: "Esta acción no se puede deshacer.",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Sí, eliminar",
+        cancelButtonText: "Cancelar",
+      });
+      if (!confirmacion.isConfirmed) {
+        return; // Si el usuario cancela, no hacer nada 
+      }
+      // Llamar al servicio para eliminar la empresa
       await eliminarEmpresa(id);
       Swal.fire({
         title: "Exito",

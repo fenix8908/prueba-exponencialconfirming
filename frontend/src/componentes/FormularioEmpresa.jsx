@@ -8,6 +8,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function FormularioEmpresa() {
+  const navegacion = useNavigate();
   const [formulario, setFormulario] = useState({
     nombre: "",
     nit: "",
@@ -16,6 +17,7 @@ export default function FormularioEmpresa() {
   });
   const { id } = useParams(); // Obtener el ID de los parámetros de la URL
   const esEdicion = Boolean(id); // Verificar si es edición o creación
+
   useEffect(() => {
     // Cargar los datos de la empresa si se está editando
     if (esEdicion) {
@@ -26,9 +28,6 @@ export default function FormularioEmpresa() {
       setFormulario({ nombre: "", nit: "", direccion: "", telefono: "" });
     }
   }, [id, esEdicion]);
-
-  const [mensaje, setMensaje] = useState("");
-  const navegacion = useNavigate();
 
   const manejarCambio = (e) => {
     const { name, value } = e.target;
@@ -50,7 +49,6 @@ export default function FormularioEmpresa() {
         });
       } else {
         await registrarEmpresa(formulario);
-        setMensaje("Empresa registrada con éxito.");
         setFormulario({ nombre: "", nit: "", direccion: "", telefono: "" });
         Swal.fire({
           title: "Éxito",
@@ -74,7 +72,6 @@ export default function FormularioEmpresa() {
   return (
     <div>
       <h2>{esEdicion ? "Actualizar Empresa" : "Registrar Empresa"}</h2>
-      {mensaje && <p>{mensaje}</p>}
       <form
         onSubmit={manejarEnvio}
         className="container mt-4 border p-4 shadow"
